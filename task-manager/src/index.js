@@ -9,64 +9,74 @@ require('./db/mongoose');
 //  ........app Setup.......
 const app = express();
 app.use(express.json())
-app.get('', (req, res) => {
+app.get('', async (req, res) => {
     res.send({
         message: "Keep God first!"
     })
 })
 //                                     .......Get all users.......
-app.get('/users', (req, res) => {
-    User.find({}).then((users) => {
-        res.send(users)
-    }).catch((e) => {
-        res.send(e)
-    })
+app.get('/users', async (req, res) => {
+    try{
+       await User.find({}).then((users) => {
+       res.send(users)
+        })
+    }catch(e){
+        res.status(500).send(e)
+    }
 })
 //                                      .......Create New User.......
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     const user = new User(req.body)
-    user.save().then(() => {
-        res.status(201)
-        res.send(user)
-    }).catch((e) => {
-        res.status(400);
-        res.send(e)
-    })
+    try{
+        await user.save().then(() => {
+            res.status(201)
+            res.send(user)
+        })
+    }catch(e){
+        res.status(400).send(e)
+    }
 })
 //                                       .......Get User By ID.......
-app.get('/users/:id', (req, res) => {
-    User.findOne({ _id: req.params.id }).then((user) => {
-        res.status(200).send(user)
-    }).catch(() => {
-        res.status(404).send({mesg: "No such user!"})
-    })
+app.get('/users/:id', async (req, res) => {
+   try {
+    const theUser = await User.findOne({ _id: req.params.id })
+       res.status(200).send(theUser)
+   } catch (e) {
+       res.status(401).send(e)
+   }
 })
 //                                        .......Get all tasks.......
-app.get('/tasks', (req, res) => {
-    Task.find({}).then((tasks) => {
-        res.send(tasks)
-    }).catch(e => {
-        res.send(e)
-    })
+app.get('/tasks', async (req, res) => {
+    try {
+        Task.find({}).then((result) => {
+            res.status(400).send(result)
+        })
+        }catch(e) {
+            res.send(e)     
+    }
 })
 //                                       ........Create New task.......
-app.post('/task', (req, res) => {
+app.post('/task', async(req, res) => {
     const task = new Task(req.body)
-    task.save().then(() => {
-        res.status(201)
-        res.send(task)
-    }).catch((e) => {
+    try {
+       await task.save().then((task) => {
+            res.status(201)
+            res.send(task)
+        })
+    } catch (e) {
         res.status(400);
-        res.send(e)
-    })
+        res.send(e) 
+    }
 })
 //                                         .......Get Task By ID.......
-app.get('/tasks/:id', (req, res) => {
-    Task.findById({ _id: req.params.id }).then((task) => {
-        res.status(200).send(task).catch((e) => {
-            res.status(404).send("No task found!")
-        })
-    })
+app.get('/tasks/:id', async (req, res) => {
+    try {
+       await Task.findById({ _id: req.params.id }).then((task) => {
+           res.status(200).send(task);
+       })
+    } catch (e) {
+        res.status(401).send(e)
+    }
 })
 app.listen(port, () => {
     console.log(`server running at locahost:${port}`);
