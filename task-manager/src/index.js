@@ -8,7 +8,7 @@ const Task = require('./models/task')
 require('./db/mongoose');
 //  ........app Setup.......
 const app = express();
-app.use(express.json())
+app.use(express.json());
 app.get('', async (req, res) => {
     res.send({
         message: "Keep God first!"
@@ -45,6 +45,49 @@ app.get('/users/:id', async (req, res) => {
        res.status(401).send(e)
    }
 })
+//                                  ........Get User by ID and Edit and save.......
+app.patch('/users/:id', async(req, res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ["name", "email", "age", "password"];
+    const validUpdation = updates.every((allowedUpdate) => {
+        updates.includes(allowedUpdate);
+    })
+    if(!validUpdation){
+       return res.status(400).send("Bad Request")
+    }
+    try {
+        const theUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true})
+        if(!theUser){
+            res.status(404).send('User Not Found!')
+        }
+        res.status(200).send(theUser)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+                       //          .......Get User By Id And Update (AndrewMead).......
+// app.patch('/users/:id', async (req, res) => {
+//     const updates = Object.keys(req.body)
+//     const allowedUpdates = ['name', 'email', 'password', 'age']
+//     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+//     if (!isValidOperation) {
+//         return res.status(400).send({ error: 'Invalid updates!' })
+//     }
+
+//     try {
+//         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    
+//         if (!user) {
+//             return res.status(404).send()
+//         }
+
+//         res.send(user)
+//     } catch (e) {
+//         res.status(400).send(e)
+//     }
+// })
 //                                        .......Get all tasks.......
 app.get('/tasks', async (req, res) => {
     try {
@@ -76,6 +119,26 @@ app.get('/tasks/:id', async (req, res) => {
        })
     } catch (e) {
         res.status(401).send(e)
+    }
+})
+//                                     ........Get Task By ID and Update.......
+app.patch('/tasks/:id', async (req, res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ["dascription", "completed"];
+    const isValidOperation = updates.every((update) => {
+        allowedUpdates.includes(update)
+    })
+    if(!isValidOperation){
+        return res.status(400).send("Bad-Request!")
+    }
+    try {
+        const theTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new:true, runValidators: true });
+        if(!theTask){
+            res.status(400).send("Not found.")
+        }
+        res.status(200).send(theTask)
+    } catch (error) {
+        res.status(400).send(error)
     }
 })
 app.listen(port, () => {
