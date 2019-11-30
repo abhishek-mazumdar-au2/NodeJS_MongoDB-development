@@ -42,7 +42,7 @@ router.patch('/tasks/:id', async (req, res) => {
     const isValidOperation = updates.every((update) => {
         allowedUpdates.includes(update)
     })
-    if(!isValidOperation){
+    if(isValidOperation){
         return res.status(400).send("Bad-Request!")
     }
     try {

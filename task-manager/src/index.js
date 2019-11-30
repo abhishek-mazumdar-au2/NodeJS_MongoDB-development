@@ -28,6 +28,17 @@ app.use(userRouter);
 app.use(taskRouter);
 // routes 1 - 5 in routes/user.js
 // routes 6 - 10 in routes/task.js
+//                                            .......Hashing password.......
+const bcrypt = require('bcryptjs');
+hashPassword = async(password) => {
+    const hashedPassword = await bcrypt.hash(password, 8)
+    console.log(password);
+    console.log(hashedPassword);
+
+    const isMatch = await bcrypt.compare(password, hashedPassword)
+    console.log(isMatch);
+}
+hashPassword("#Kasol2sar")
 app.listen(port, () => {
     console.log(`server running at locahost:${port}`);
 });
