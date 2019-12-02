@@ -46,7 +46,12 @@ router.patch('/tasks/:id', async (req, res) => {
         return res.status(400).send("Bad-Request!")
     }
     try {
-        const theTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new:true, runValidators: true });
+        const theTask = await Task.findById(req.params.id);
+        updates.forEach((update) => {
+            theTask[update] = req.body[update]
+        })
+        await theTask.save();
+        // const theTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new:true, runValidators: true });
         if(!theTask){
             res.status(400).send("Not found.")
         }

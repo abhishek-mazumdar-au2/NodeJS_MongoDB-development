@@ -44,6 +44,7 @@ app.listen(port, () => {
 });
 
 //                                       ...way to hash password...
+
 // 1. model --> make the schema --> schema.pre(){middleware}
 // 2. routes --> already create works
 // 3. findByIdAndUpdate routes

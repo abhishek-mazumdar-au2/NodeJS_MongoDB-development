@@ -12,7 +12,18 @@ router.get('/users', async (req, res) => {
         res.status(500).send(e)
     }
 })
-// 2                                               .......Create New User.......
+// 2                                                .......login route.......
+router.post('/users/login', async(req, res) => {
+    try {
+        const { email, password } = req.body;
+        console.log('running1');
+       const user =  await User.findByCredentials(email, password)
+       res.status(200).send(user)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+// 3                                               .......Create New User.......
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
     try{
@@ -24,7 +35,7 @@ router.post('/users', async (req, res) => {
         res.status(400).send(e)
     }
 })
-// 3                                              .......Get User By ID.......
+// 4                                              .......Get User By ID.......
 router.get('/users/:id', async (req, res) => {
    try {
     const theUser = await User.findOne({ _id: req.params.id })
@@ -33,7 +44,7 @@ router.get('/users/:id', async (req, res) => {
        res.status(401).send(e)
    }
 })
-// 4                                ........Get User by ID and Edit and save.......
+// 5                                ........Get User by ID and Edit and save.......
 router.patch('/users/:id', async(req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ["name", "email", "age", "password"];
@@ -84,7 +95,7 @@ router.patch('/users/:id', async(req, res) => {
 //         res.status(400).send(e)
 //     }
 // })
-// 5                                         .......delete Usery By ID.......
+// 6                                         .......delete Usery By ID.......
 router.delete('/users/:id', async(req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
