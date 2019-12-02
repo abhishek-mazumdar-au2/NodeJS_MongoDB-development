@@ -38,7 +38,13 @@ hashPassword = async(password) => {
     const isMatch = await bcrypt.compare(password, hashedPassword)
     console.log(isMatch);
 }
-hashPassword("#Kasol2sar")
+// hashPassword("#Kasol2sar")
 app.listen(port, () => {
     console.log(`server running at locahost:${port}`);
 });
+
+//                                       ...way to hash password...
+// 1. model --> make the schema --> schema.pre(){middleware}
+// 2. routes --> already create works
+// 3. findByIdAndUpdate routes
+// 4. schema add hash function
