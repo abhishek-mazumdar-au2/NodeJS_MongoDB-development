@@ -1,6 +1,7 @@
 const express= require('express');
 const router = express.Router();
 const User = require('../models/user')
+const jwt = require('jsonwebtoken');
 
 // 1                                                .......Get all users.......
 router.get('/users', async (req, res) => {
@@ -16,9 +17,9 @@ router.get('/users', async (req, res) => {
 router.post('/users/login', async(req, res) => {
     try {
         const { email, password } = req.body;
-        console.log('running1');
        const user =  await User.findByCredentials(email, password)
-       res.status(200).send(user)
+       const token  = await user.generateAuthToken(); // this creates the token
+       res.status(200).send( { user, token } )
     } catch (e) {
         res.status(400).send(e)
     }
