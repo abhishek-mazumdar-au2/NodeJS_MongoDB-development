@@ -7,9 +7,20 @@ const User = require('./models/user');
 const Task = require('./models/task')
 
  //                                       .......Mongooose SetupConnect.......
+
 require('./db/mongoose');
-//  ........app Setup.......
+//                                             ........app Setup.......
 const app = express();
+
+//                                    .......Middleware for route handling........
+app.use((req, res, next) => {
+    if(req.method === 'GET' || req.method === 'POST'){
+        res.send("site is under maintainance. Please try soon.")
+    }else{
+        next();
+    }                  // as authenticating tokens and etc.
+})
+
 app.use(express.json());
 app.get('', async (req, res) => {
     res.send({

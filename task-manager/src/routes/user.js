@@ -28,9 +28,10 @@ router.post('/users/login', async(req, res) => {
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
     try{
+        const token = await user.generateAuthToken();
         await user.save().then(() => {
             res.status(201)
-            res.send(user)
+            res.send({user, token})
         })
     }catch(e){
         res.status(400).send(e)
