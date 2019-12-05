@@ -19,7 +19,7 @@ router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({ user, token })
+        res.send({ user: user, token })
     } catch (e) {
         res.status(400).send()
     }
@@ -31,26 +31,25 @@ router.post('/users/logout', auth, async (req, res) => {
             return token.token !== req.token
         })
         await req.user.save()
-
-        res.send()
+        res.send(req.user)
     } catch (e) {
         res.status(500).send()
     }
 })
 
-// router.post('/users/logoutAll', auth, async (req, res) => {
-//     try {
-//         req.user.tokens = []
-//         await req.user.save()
-//         res.send()
-//     } catch (e) {
-//         res.status(500).send()
-//     }
-// })
+router.post('/users/logoutAll', auth, async (req, res) => {
+    try {
+        req.user.tokens = [];
+        await req.user.save()
+        res.send('Logged out of all devices.').status(400)
+    } catch (e) {
+        res.send(e).status(500)
+    }
+})
 
 router.get('/users/me', auth, async (req, res) => {
-    
-    res.send(req.user)
+    // const user = (req.user).getPublicProfile
+    res.send({user: req.user})
 })
 
 router.get('/users/:id', async (req, res) => {
