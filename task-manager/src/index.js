@@ -13,13 +13,13 @@ require('./db/mongoose');
 const app = express();
 
 //                                    .......Middleware for route handling........
-app.use((req, res, next) => {
-    if(req.method === 'GET' || req.method === 'POST'){
-        res.send("site is under maintainance. Please try soon.")
-    }else{
-        next();
-    }                  // as authenticating tokens and etc.
-})
+// app.use((req, res, next) => {
+//     if(req.method === 'GET' || req.method === 'POST'){
+//         res.send("site is under maintainance. Please try soon.")
+//     }else{
+//         next();
+//     }                  // as authenticating tokens and etc.
+// })
 
 app.use(express.json());
 app.get('', async (req, res) => {
@@ -59,7 +59,7 @@ myFunction = async() => {
     console.log(token);
 
     //                                  .......jwt Verify.......
-    const data = jwt.verify(token, 'shhh', { expiresIn: '5 seconds' });
+    const data = jwt.verify(token, 'shhh', { expiresIn: '7 days' });
     console.log(data);
 }
 myFunction();
